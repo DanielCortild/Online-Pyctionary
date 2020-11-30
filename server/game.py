@@ -2,6 +2,7 @@ from .player import Player
 from .board import Board
 from .round import Round
 
+
 class Game(object):
     def __init__(self, id, players, thread):
         """
