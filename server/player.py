@@ -1,6 +1,3 @@
-from .game import Game
-
-
 class Player(object):
     def __init__(self, ip, name):
         """
@@ -21,7 +18,7 @@ class Player(object):
         """
         self.game = game
 
-    def update_Score(self, x):
+    def update_score(self, x):
         """
         Updates a players score
         :param x: int
@@ -42,7 +39,7 @@ class Player(object):
         Call to disconnect player
         :return:
         """
-        pass
+        self.game.player_disconnected(self, wrd)
 
     def get_ip(self):
         """

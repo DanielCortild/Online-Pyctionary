@@ -1,7 +1,6 @@
 import time as t
 from _thread import *
-from .game import Game
-from .chat import Chat
+from chat import Chat
 
 class Round(object):
     def __init__(self, word, player_drawing, players, game):
@@ -17,6 +16,7 @@ class Round(object):
         self.skips = 0
         self.player_scores = {player:0 for player in players}
         self.time = 75
+        self.game = game
         self.chat = Chat(self)
         start_new_thread(self.time_thread, ())
 
@@ -88,5 +88,7 @@ class Round(object):
             self.end_round("Drawing player left")
 
     def end_round(self, msg):
-        pass
+        for player in self.players:
+            player.update_score(self.player_scores[player])
+        self.game.round_ended()
 

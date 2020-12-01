@@ -1,10 +1,11 @@
-from .player import Player
-from .board import Board
-from .round import Round
+from board import Board
+from round import Round
+
+import random
 
 
 class Game(object):
-    def __init__(self, id, players, thread):
+    def __init__(self, id, players):
         """
         init the game once enough players are connected
         :param id: int
@@ -12,12 +13,11 @@ class Game(object):
         """
         self.id = id
         self.players = players
-        self.words_used = []
+        self.words_used = set()
         self.round = None
         self.board = Board()
         self.player_draw_ind = 0
-        self.connected_thread = thread
-
+        self.round_counter = 0
         self.start_new_round()
 
     def start_new_round(self):
@@ -25,11 +25,15 @@ class Game(object):
         start new round with new word
         :return: None
         """
-        self.round = Round(self.get_word(), self.players[self.player_draw_ind], self.players, self)
-        self.player_draw_ind += 1
+        round_word = self.get_word()
+        self.round = Round(round_word, self.players[self.player_draw_ind], self.players, self)
+        self.round_counter += 1
+
         if self.player_draw_ind >= len(self.players):
             self.round_ended()
             self.end_game()
+
+        self.player_draw_ind += 1
 
     def player_guess(self, player, guess):
         """
@@ -46,7 +50,26 @@ class Game(object):
         :param player: Player
         :raises: Exception()
         """
-        pass
+        # STILL TO bE CHECKED
+        if player in self.players:
+            player_ind = self.players.index(player)
+            if player_ind >= self.player_draw_ind:
+                self.player_draw_ind -= 1
+            self.players.remove(player)
+            self.round.player_left(player)
+        else:
+            raise Exception("Player not in game")
+
+        if len(self.players) <= 2:
+            self.end_game()
+
+    def get_player_scores(self):
+        """
+        Returns a dict of player scores
+        :return: dict
+        """
+        scores = {player: player.get_score() for player in self.players}
+        return scores
 
     def skip(self):
         """
@@ -87,12 +110,21 @@ class Game(object):
         :return:
         """
         # Still to implement
-        pass
+        for player in self.players:
+            self.round.player_left(player)
 
     def get_word(self):
         """
         gives a word that has not yet been used
         :return: str
         """
-        # GET WORD
-        pass
+        with open("words.txt", "r") as f:
+            words = []
+            for line in f:
+                wrd = line.strip()
+                if wrd not in self.words_used:
+                    words.append(wrd)
+            r = random.randint(0, len(words)-1)
+            wrd = words[r]
+            self.words_used.add(wrd)
+            return wrd
