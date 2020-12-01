@@ -27,21 +27,22 @@ class Server(object):
                     data = conn.recv(1024)
                     data = json.loads(data.decode())
                     print(f"[LOG] Received Value : {data}")
-                except:
+                except Exception as e:
                     break
 
-                keys = data.keys()
-                send_msg = {int(key): [] for key in keys}
+                keys = [int(key) for key in data.keys()]
+                send_msg = {key: [] for key in keys}
 
                 for key in keys:
                     if key == -1: # Get game, returns list of players
                         if player.game:
-                            send_msg[-1] = player.game.players
+                            send = {player.get_name(): player.get_score() for player in player.game.players}
+                            send_msg[-1] = send
                         else:
                             send_msg[-1] = []
                     if player.game:
                         if key == 0:  # Guess
-                            correct = player.game.player_guess(player, data[0][0])
+                            correct = player.game.player_guess(player, data['0'][0])
                             send_msg[0] = correct
                         elif key == 1:  # Skip
                             skip = player.game.skip()
@@ -74,12 +75,14 @@ class Server(object):
                         raise Exception("Not valid request")
 
                 conn.sendall(json.dumps(send_msg).encode())
+                conn.sendall(".".encode())
 
             except Exception as e:
                 print(f"[EXCEPTION] {player.get_name()}: {e}")
                 break
 
         print(f"[DISCONNECT] {player.name} disconnected")
+        # player.game.player_disconnected(player)
         conn.close()
 
     def handle_queue(self, player):

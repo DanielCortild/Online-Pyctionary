@@ -25,15 +25,18 @@ class Game(object):
         start new round with new word
         :return: None
         """
-        round_word = self.get_word()
-        self.round = Round(round_word, self.players[self.player_draw_ind], self.players, self)
-        self.round_counter += 1
+        try:
+            round_word = self.get_word()
+            self.round = Round(round_word, self.players[self.player_draw_ind], self)
+            self.round_counter += 1
 
-        if self.player_draw_ind >= len(self.players):
-            self.round_ended()
+            if self.player_draw_ind >= len(self.players):
+                self.round_ended()
+                self.end_game()
+
+            self.player_draw_ind += 1
+        except Exception as e:
             self.end_game()
-
-        self.player_draw_ind += 1
 
     def player_guess(self, player, guess):
         """
@@ -68,7 +71,7 @@ class Game(object):
         Returns a dict of player scores
         :return: dict
         """
-        scores = {player: player.get_score() for player in self.players}
+        scores = {player.get_name(): player.get_score() for player in self.players}
         return scores
 
     def skip(self):
@@ -80,7 +83,8 @@ class Game(object):
             new_round = self.round.skip()
             if new_round:
                 self.round_ended()
-
+                return True
+            return False
         else:
             raise Exception("No round started yet")
 
@@ -97,7 +101,7 @@ class Game(object):
         Calls update method on board
         :param x: int
         :param y: int
-        :param color: (int, int, int)
+        :param color: 0-8
         :return: None
         """
         if not self.board:
@@ -109,9 +113,11 @@ class Game(object):
 
         :return:
         """
-        # Still to implement
+        print(f"[GAME] Game {self.id} ended")
+        # for player in self.players:
+        #     self.round.player_left(player)
         for player in self.players:
-            self.round.player_left(player)
+            player.game = None
 
     def get_word(self):
         """

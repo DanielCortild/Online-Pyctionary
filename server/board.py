@@ -5,14 +5,14 @@ class Board(object):
         """
         Init the board
         """
-        self.data = self._create_empty_board
+        self.data = self._create_empty_board()
 
     def update(self, x, y, color):
         """
         Updates a single pixel
         :param x: int
         :param y: int
-        :param color: (int, int, int)
+        :param color: 0-8
         :return: None
         """
         self.data[y][x] = color
@@ -22,7 +22,7 @@ class Board(object):
         Clear board to all white
         :return: None
         """
-        self.data = self._create_empty_board
+        self.data = self._create_empty_board()
 
     def fill(self, x, y):
         """
@@ -45,6 +45,6 @@ class Board(object):
         Creates an all white board (Empty)
         :return:
         """
-        return [[(255,255,255) for _ in range(self.COLS)] for _ in range(self.ROWS)]
+        return [[0 for _ in range(self.COLS)] for _ in range(self.ROWS)]
 
 

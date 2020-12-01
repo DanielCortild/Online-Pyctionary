@@ -22,7 +22,22 @@ class Network:
     def send(self, data):
         try:
             self.client.send(json.dumps(data).encode())
-            return json.loads(self.client.recv(2048).decode())
+            d = ""
+            while True:
+                last = self.client.recv(1024).decode()
+                d += last
+                try:
+                    if last.count(".") == 1:
+                        break
+                except:
+                    break
+            try:
+                if d[-1] == ".":
+                    d = d[:-1]
+            except:
+                print("[EXCEPTION] Error")
+            keys = [key for key in data.keys()]
+            return json.loads(d)[str(keys[0])]
         except socket.error as e:
             self.disconnect(e)
 
@@ -36,4 +51,8 @@ class Network:
 
 
 n = Network("Daniel Test")
-print(n.send({"0": []}))
+print(n.send({6: []}))
+
+# Works up till 6!!
+# 5:25:20
+# https://www.youtube.com/watch?v=wDIQ17T3sRk&list=WL&index=1&t=14429s&ab_channel=TechWithTim
