@@ -1,5 +1,6 @@
 import socket
 import json
+import time
 
 
 class Network:
@@ -31,11 +32,8 @@ class Network:
                         break
                 except:
                     break
-            try:
-                if d[-1] == ".":
-                    d = d[:-1]
-            except:
-                print("[EXCEPTION] Error")
+            if d[-1] == ".":
+                d = d[:-1]
             keys = [key for key in data.keys()]
             return json.loads(d)[str(keys[0])]
         except socket.error as e:
@@ -51,8 +49,12 @@ class Network:
 
 
 n = Network("Daniel Test")
-print(n.send({6: []}))
+t = 20
+while t > 0:
+    print(n.send({9: []}))
+    t -= 1
+    time.sleep(1)
 
-# Works up till 6!!
+# Only 8 has not been tested (Update Board)!!
 # 5:25:20
 # https://www.youtube.com/watch?v=wDIQ17T3sRk&list=WL&index=1&t=14429s&ab_channel=TechWithTim
