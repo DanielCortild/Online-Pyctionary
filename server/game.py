@@ -63,6 +63,8 @@ class Game(object):
         else:
             raise Exception("Player not in game")
 
+        self.round.chat.update_chat(f"Player {player.name} disconnected!")
+
         if len(self.players) <= 2:
             self.end_game()
 
@@ -81,7 +83,9 @@ class Game(object):
         """
         if self.round:
             new_round = self.round.skip()
+            self.round.chat.update_chat(f"Player has voted to skip ({self.round.skips}/{len(self.players)-2})")
             if new_round:
+                self.round.chat.update_chat("Round has been skipped.")
                 self.round_ended()
                 return True
             return False
@@ -93,6 +97,7 @@ class Game(object):
         If rounds ends call this
         :return: None
         """
+        self.round.chat.update_chat(f"Round {self.round_counter} has ended")
         self.start_new_round()
         self.board.clear()
 

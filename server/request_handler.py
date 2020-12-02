@@ -127,7 +127,7 @@ class Server(object):
     def connected_thread(self, ):
 
         server = "localhost"
-        port = 5555
+        port = 6543
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
