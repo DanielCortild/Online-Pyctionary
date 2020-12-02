@@ -28,10 +28,10 @@ class Network:
                 last = self.client.recv(1024).decode()
                 d += last
                 try:
-                    if last.count(".") == 1:
+                    if d.count(".") == 1:
                         break
                 except:
-                    break
+                    pass
             if d[-1] == ".":
                 d = d[:-1]
             keys = [key for key in data.keys()]
@@ -49,11 +49,8 @@ class Network:
 
 
 n = Network("Daniel Test")
-t = 20
-while t > 0:
-    print(n.send({9: []}))
-    t -= 1
-    time.sleep(1)
+print(n.send({1: []}))
+print(n.send({1: []}))
 
 # Only 8 has not been tested (Update Board)!!
 # 5:25:20

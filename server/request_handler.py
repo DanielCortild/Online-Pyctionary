@@ -74,8 +74,8 @@ class Server(object):
                     if key == 10:
                         raise Exception("Not valid request")
 
-                conn.sendall(json.dumps(send_msg).encode())
-                conn.sendall(".".encode())
+                conn.sendall(json.dumps(send_msg).encode()+".".encode())
+
 
             except Exception as e:
                 print(f"[EXCEPTION] {player.get_name()}: {e}")
