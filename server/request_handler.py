@@ -66,7 +66,7 @@ class Server(object):
                             skips = player.game.round.skips
                             send_msg[7] = skips
                         elif key == 8:  # Update board
-                            x, y, color = data[8][:3]
+                            x, y, color = data['8'][:3]
                             player.game.update_board(x, y, color)
                         elif key == 9:  # Get round time
                             t = player.game.round.time
@@ -126,7 +126,7 @@ class Server(object):
 
     def connected_thread(self, ):
 
-        server = "localhost"
+        server = "188.166.107.89"
         port = 6543
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
