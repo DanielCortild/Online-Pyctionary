@@ -36,6 +36,7 @@ class Game(object):
 
             self.player_draw_ind += 1
         except Exception as e:
+            print(f"[EXCEPTION] Game has ended because of {e}")
             self.end_game()
 
     def player_guess(self, player, guess):
@@ -53,7 +54,6 @@ class Game(object):
         :param player: Player
         :raises: Exception()
         """
-        # STILL TO bE CHECKED
         if player in self.players:
             player_ind = self.players.index(player)
             if player_ind >= self.player_draw_ind:
@@ -65,7 +65,7 @@ class Game(object):
 
         self.round.chat.update_chat(f"Player {player.name} disconnected!")
 
-        if len(self.players) <= 2:
+        if len(self.players) == 0:
             self.end_game()
 
     def get_player_scores(self):

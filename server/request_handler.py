@@ -82,7 +82,7 @@ class Server(object):
                 break
 
         print(f"[DISCONNECT] {player.name} disconnected")
-        # player.game.player_disconnected(player)
+        player.game.player_disconnected(player)
         conn.close()
 
     def handle_queue(self, player):
@@ -96,7 +96,7 @@ class Server(object):
         if len(self.connection_queue) >= self.PLAYERS:
             game = Game(self.game_id, self.connection_queue[:])
 
-            for p in self.connection_queue:
+            for p in game.players:
                 p.set_game(game)
 
             self.game_id += 1

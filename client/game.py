@@ -77,8 +77,10 @@ class Game:
         while run:
             clock.tick(60)
             try:
-                response = self.connection.send({3: []})
-                self.board.compressed_board = response
+                self.top_bar.time = self.connection.send({9: []})
+                self.top_bar.change_round(self.connection.send({5: []}))
+                self.top_bar.word = "A pet"#self.connection.send({6: []})
+                self.board.compressed_board = self.connection.send({3: []})
                 self.board.translate_board()
             except:
                 break
