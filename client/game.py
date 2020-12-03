@@ -2,20 +2,19 @@ import pygame
 from button import Button, TextButton
 from board import Board
 from top_bar import TopBar
-from main_menu import MainMenu
 from leaderboard import Leaderboard
 from player import Player
 from bottom_bar import BottomBar
 from chat import Chat
+from network import Network
 
 
 class Game:
     BG = (255, 255, 255)
 
-    def __init__(self):
-        self.WIDTH = 1300
-        self.HEIGHT = 900
-        self.win = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+    def __init__(self, win, connection=None):
+        self.connection = connection
+        self.win = win
         self.top_bar = TopBar(10, 10, 1280, 100)
         self.leaderboard = Leaderboard(20, 120)
         self.skip_button = TextButton(150, 700, 100, 50, (255, 128, 0), "Skip")
@@ -23,11 +22,15 @@ class Game:
         self.bottom_bar = BottomBar(10, 700, self)
         self.chat = Chat(1000, 110)
         self.top_bar.change_round(1)
-        self.players = [Player("Daniel"), Player("Lorena"), Player("Laura"), Player("Jeff"), Player("Daniel"), Player("Lorena"), Player("Laura"), Player("Jeff")]
+        self.players = []
         for player in self.players:
             self.leaderboard.add_player(player)
 
         self.draw_color = (0, 0, 0)
+
+    def add_player(self, player):
+        self.players.append(player)
+        self.leaderboard.add_player(player)
 
     def draw(self):
         self.win.fill(self.BG)
@@ -61,6 +64,7 @@ class Game:
         clock = pygame.time.Clock()
         while run:
             clock.tick(60)
+            response = self.connection.send({3: []})
             self.draw()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -70,15 +74,14 @@ class Game:
                     self.check_clicks()
 
                 if event.type == pygame.KEYDOWN:
-                    key_name = pygame.key.name(event.key).upper()
-                    self.chat.type(key_name)
+                    if event.key == pygame.K_RETURN:
+                        self.chat.update_chat()
+                        self.connection.send({0: [self.chat.typing]})
+                        self.chat.typing = ""
+                    else:
+                        key_name = pygame.key.name(event.key).upper()
+                        self.chat.type(key_name)
 
 
 
         pygame.quit()
-
-
-if __name__ == "__main__":
-    pygame.font.init()
-    g = Game()
-    g.run()

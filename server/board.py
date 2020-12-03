@@ -1,5 +1,5 @@
 class Board(object):
-    ROWS = COLS = 720
+    ROWS = COLS = 80
 
     def __init__(self):
         """

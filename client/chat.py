@@ -15,8 +15,8 @@ class Chat:
         self.typing = ""
         self.chat_font = pygame.font.SysFont("comicsans", 24)
 
-    def update_chat(self, msg):
-        self.content.append(msg)
+    def update_chat(self):
+        self.content.append(self.typing)
 
     def draw(self, win):
         pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.WIDTH, self.HEIGHT), self.BORDER_THICKNESS)
