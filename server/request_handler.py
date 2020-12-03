@@ -7,7 +7,7 @@ import json
 
 
 class Server(object):
-    PLAYERS = 1
+    PLAYERS = 2
 
     def __init__(self):
         self.connection_queue = []

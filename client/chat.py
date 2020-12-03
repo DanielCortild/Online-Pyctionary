@@ -17,6 +17,7 @@ class Chat:
 
     def update_chat(self):
         self.content.append(self.typing)
+        self.typing = ""
 
     def draw(self, win):
         pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.WIDTH, self.HEIGHT), self.BORDER_THICKNESS)

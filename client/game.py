@@ -11,17 +11,17 @@ from network import Network
 
 class Game:
     BG = (255, 255, 255)
-    COLORS = {
-        (255, 255, 255): 0,
-        (0, 0, 0): 1,
-        (128, 128, 128): 2,
-        (255, 0, 0): 3,
-        (255, 128, 0): 4,
-        (255, 255, 0): 5,
-        (0, 255, 0): 6,
-        (0, 255, 255): 7,
-        (0, 0, 255): 8
-    }
+    COLORS = [
+        (255, 255, 255),
+        (0, 0, 0),
+        (128, 128, 128),
+        (255, 0, 0),
+        (255, 128, 0),
+        (255, 255, 0),
+        (0, 255, 0),
+        (0, 255, 255),
+        (0, 0, 255)
+    ]
 
     def __init__(self, win, connection=None):
         self.connection = connection
@@ -67,9 +67,9 @@ class Game:
         clicked_board = self.board.click(*mouse)
         if clicked_board:
             self.board.update(*clicked_board, self.draw_color)
-            self.connection.send({8: [*clicked_board, self.COLORS[tuple(self.draw_color)]]})
+            self.connection.send({8: [*clicked_board, self.COLORS.index(self.draw_color)]})
 
-        clicked_buttons = self.bottom_bar.button_events(mouse)
+        self.bottom_bar.button_events(mouse)
 
     def run(self):
         run = True
@@ -95,7 +95,6 @@ class Game:
                     if event.key == pygame.K_RETURN:
                         self.chat.update_chat()
                         self.connection.send({0: [self.chat.typing]})
-                        self.chat.typing = ""
                     else:
                         key_name = pygame.key.name(event.key).upper()
                         self.chat.type(key_name)
