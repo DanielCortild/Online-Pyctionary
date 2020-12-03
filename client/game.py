@@ -3,11 +3,10 @@ from button import Button, TextButton
 from board import Board
 from top_bar import TopBar
 from main_menu import MainMenu
-from menu import Menu
-from tool_bar import ToolBar
 from leaderboard import Leaderboard
 from player import Player
 from bottom_bar import BottomBar
+from chat import Chat
 
 
 class Game:
@@ -22,10 +21,13 @@ class Game:
         self.skip_button = TextButton(150, 700, 100, 50, (255, 128, 0), "Skip")
         self.board = Board(350, 120)
         self.bottom_bar = BottomBar(10, 700, self)
+        self.chat = Chat(1000, 110)
         self.top_bar.change_round(1)
         self.players = [Player("Daniel"), Player("Lorena"), Player("Laura"), Player("Jeff"), Player("Daniel"), Player("Lorena"), Player("Laura"), Player("Jeff")]
         for player in self.players:
             self.leaderboard.add_player(player)
+
+        self.draw_color = (0, 0, 0)
 
     def draw(self):
         self.win.fill(self.BG)
@@ -35,6 +37,7 @@ class Game:
         self.skip_button.draw(self.win)
         self.board.draw(self.win)
         self.bottom_bar.draw(self.win)
+        self.chat.draw(self.win)
 
         pygame.display.update()
 
@@ -49,7 +52,7 @@ class Game:
 
         clicked_board = self.board.click(*mouse)
         if clicked_board:
-            self.board.update(*clicked_board, (0, 0, 0))
+            self.board.update(*clicked_board, self.draw_color)
 
         clicked_buttons = self.bottom_bar.button_events(mouse)
 
@@ -65,6 +68,12 @@ class Game:
                     break
                 if pygame.mouse.get_pressed()[0]:
                     self.check_clicks()
+
+                if event.type == pygame.KEYDOWN:
+                    key_name = pygame.key.name(event.key).upper()
+                    self.chat.type(key_name)
+
+
 
         pygame.quit()
 
