@@ -26,17 +26,18 @@ class Game(object):
         :return: None
         """
         try:
+            if self.player_draw_ind >= len(self.players):
+                self.round_ended()
+                self.end_game()
+                return
+
             round_word = self.get_word()
             self.round = Round(round_word, self.players[self.player_draw_ind], self)
             self.round_counter += 1
 
-            if self.player_draw_ind >= len(self.players):
-                self.round_ended()
-                self.end_game()
-
             self.player_draw_ind += 1
         except Exception as e:
-            print(f"[EXCEPTION] Game has ended because of {e}")
+            print(f"[EXCEPTION] Game {self.id} has ended because of {e}")
             self.end_game()
 
     def player_guess(self, player, guess):
