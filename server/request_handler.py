@@ -124,7 +124,7 @@ class Server(object):
             print(f"[EXCEPTION] {e}")
             conn.close()
 
-    def connected_thread(self, ):
+    def connected_thread(self):
 
         server = "188.166.107.89"
         port = 6543

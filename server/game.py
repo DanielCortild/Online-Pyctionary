@@ -24,18 +24,16 @@ class Game(object):
         """
         start new round with new word
         :return: None
-        """
+        """d
         try:
-            if self.player_draw_ind >= len(self.players):
-                self.round_ended()
+            if self.player_draw_ind >= len(self.players) or self.player_draw_ind == -1:
+                print(f"[END] Game {self.id} ended because everyone drew once or all players disconnected")
                 self.end_game()
-                return
-
-            round_word = self.get_word()
-            self.round = Round(round_word, self.players[self.player_draw_ind], self)
-            self.round_counter += 1
-
-            self.player_draw_ind += 1
+            else:
+                round_word = self.get_word()
+                self.round = Round(round_word, self.players[self.player_draw_ind], self)
+                self.round_counter += 1
+                self.player_draw_ind += 1
         except Exception as e:
             print(f"[EXCEPTION] Game {self.id} has ended because of {e}")
             self.end_game()
