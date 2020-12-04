@@ -6,8 +6,9 @@ import time
 class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "188.166.107.89"
-        self.port = 6543
+        # self.server = "188.166.107.89"
+        self.server = "localhost"
+        self.port = 1284
         self.addr = (self.server, self.port)
         self.name = name
         self.connect()
@@ -16,7 +17,8 @@ class Network:
         try:
             self.client.connect(self.addr)
             self.client.sendall(self.name.encode())
-            return json.loads(self.client.recv(2048).decode())
+            if not json.loads(self.client.recv(2048).decode()):
+                raise Exception("Connection Failed")
         except Exception as e:
             self.disconnect(e)
 
@@ -27,13 +29,9 @@ class Network:
             while True:
                 last = self.client.recv(1024).decode()
                 d += last
-                try:
-                    if d.count(".") == 1:
-                        break
-                except:
-                    pass
-            if d[-1] == ".":
-                d = d[:-1]
+                if d[-1] == ".":
+                    d = d[:-1]
+                    break
             keys = [key for key in data.keys()]
             return json.loads(d)[str(keys[0])]
         except socket.error as e:
@@ -41,12 +39,7 @@ class Network:
 
     def disconnect(self, msg):
         print(f"[EXCEPTION] Disconnected from server {msg}")
-        # try:
-        #     self.send({"10": []})
-        # except:
-        #     self.client.close()
         self.client.close()
-
 
 n = Network("Daniel Test")
 print(n.send({-1: []}))

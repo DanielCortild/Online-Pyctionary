@@ -24,7 +24,7 @@ class Game(object):
         """
         start new round with new word
         :return: None
-        """d
+        """
         try:
             if self.player_draw_ind >= len(self.players) or self.player_draw_ind == -1:
                 print(f"[END] Game {self.id} ended because everyone drew once or all players disconnected")

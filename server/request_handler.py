@@ -26,7 +26,7 @@ class Server(object):
                 try:
                     data = conn.recv(1024)
                     data = json.loads(data.decode())
-                    print(f"[LOG] Received Value : {data}")
+                    # print(f"[LOG] Received Value : {data}")
                 except Exception as e:
                     break
 
@@ -81,8 +81,11 @@ class Server(object):
                 print(f"[EXCEPTION] {player.get_name()}: {e}")
                 break
 
-        print(f"[DISCONNECT] {player.name} disconnected")
-        player.game.player_disconnected(player)
+        print(f"[DISCONNECTION] {player.name}")
+        if player.game:
+            player.game.player_disconnected(player)
+        if player in self.connection_queue:
+            self.connection_queue.remove(player)
         conn.close()
 
     def handle_queue(self, player):
@@ -114,7 +117,7 @@ class Server(object):
             name = str(data.decode())
             if not name:
                 raise Exception("No name received")
-            conn.sendall("1".encode())
+            conn.sendall("Connected".encode())
 
             player = Player(addr, name)
             self.handle_queue(player)
@@ -126,8 +129,9 @@ class Server(object):
 
     def connected_thread(self):
 
-        server = "188.166.107.89"
-        port = 6543
+        # server = "188.166.107.89"
+        server = "localhost"
+        port = 1284
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
