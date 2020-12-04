@@ -9,6 +9,7 @@ class Player(object):
         self.ip = ip
         self.name = name
         self.score = 0
+        self.has_guessed = False
 
     def set_game(self, game):
         """

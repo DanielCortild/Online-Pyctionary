@@ -6,7 +6,7 @@ class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # self.server = "188.166.107.89"
-        self.addr = ("188.166.107.89", 1286)
+        self.addr = ("localhost", 1287)
         self.name = name
         self.connect()
 
@@ -35,12 +35,4 @@ class Network:
 
 if __name__ == "__main__":
     n = Network("Daniel Test")
-    print(n.send({-1: []}))
-    print(n.send({0: ["Pizza"]}))
-    # print(n.send({1: []}))
-    print(n.send({2: []}))
-    print(n.send({4: []}))
-    print(n.send({5: []}))
-    print(n.send({6: []}))
-    print(n.send({7: []}))
-    print(n.send({9: []}))
+    print(n.send({10: []}))

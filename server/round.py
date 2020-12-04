@@ -65,12 +65,12 @@ class Round(object):
         :param wrd: str
         :return: bool
         """
-        correct = wrd == self.word
+        correct = wrd.lower() == self.word.lower()
         if correct:
             self.player_guessed.append(player)
-            self.chat.update_chat(f"{player.name} has guessed the word")
+            self.chat.update_chat(f"g{player.name} guessed the word")
             return True
-        self.chat.update_chat(f"{player.name} guess {wrd}")
+        self.chat.update_chat(f"r{player.name} guess {wrd}")
         return False
 
     def player_left(self, player):
@@ -92,6 +92,7 @@ class Round(object):
 
     def end_round(self, msg):
         for player in self.game.players:
+            player.has_guessed = False
             if player in self.player_scores:
                 player.update_score(self.player_scores[player])
         self.game.round_ended()

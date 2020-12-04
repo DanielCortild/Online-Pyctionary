@@ -8,8 +8,8 @@ class MainMenu:
     BG = (255, 255, 255)
 
     def __init__(self):
-        self.WIDTH = 1300
-        self.HEIGHT = 900
+        self.WIDTH = 1080
+        self.HEIGHT = 720
         self.win = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.name = ""
         self.waiting = False

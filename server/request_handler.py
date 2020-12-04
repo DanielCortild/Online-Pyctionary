@@ -7,12 +7,12 @@ import json
 
 
 class Server(object):
-    PLAYERS = 2
+    PLAYERS = 1
 
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
-        self.addr = ("localhost", 1287) # 188.166.107.89
+        self.addr = ("localhost", 1287)  # 188.166.107.89
 
     def player_communication(self, conn, player):
         """
@@ -30,7 +30,7 @@ class Server(object):
 
                 key = int(list(data.keys())[0])
                 send_msg = ""
-                if key == -1: # Get list of players
+                if key == -1:  # Get list of players
                     if player.game:
                         send_msg = {
                             player.get_name(): player.get_score() for player in player.game.players
@@ -39,7 +39,12 @@ class Server(object):
                         send_msg = {}
                 if player.game:
                     if key == 0:  # Guess
-                        send_msg = player.game.player_guess(player, data['0'][0])
+                        if not player.has_guessed:
+                            guess = player.game.player_guess(player, data['0'][0])
+                            if guess:
+                                player.update_score(10)
+                                player.has_guessed = True
+                            send_msg = guess
                     elif key == 1:  # Skip
                         send_msg = player.game.skip()
                     elif key == 2:  # Get chat
@@ -58,6 +63,10 @@ class Server(object):
                         player.game.update_board(*data['8'][:3])
                     elif key == 9:  # Get round time
                         send_msg = player.game.round.time
+                    elif key == 10:  # Get whether you are drawing or not
+                        send_msg = player.game.players[player.game.player_draw_ind-1] == player
+                    elif key == 11:  # Clear the board
+                        player.game.board.clear()
 
                 conn.sendall(json.dumps(send_msg).encode()+".".encode())
 

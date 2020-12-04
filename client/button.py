@@ -2,20 +2,27 @@ import pygame
 
 
 class Button:
-    def __init__(self, x, y, width, height, color, border_color=(0, 0, 0)):
+    def __init__(self, x, y, width, height, color=(128, 128, 128)):
+        """
+        :param x: int
+        :param y: int
+        :param width: int
+        :param height: int
+        :param color: (int, int, int)
+        """
         self.x = x
         self.y = y
         self.height = height
         self.width = width
         self.color = color
-        self.border_color = border_color
+
         self.BORDER_WIDTH = 2
 
     def draw(self, win):
-        pygame.draw.rect(win, self.border_color, (self.x, self.y, self.width, self.height), 0)
-        pygame.draw.rect(win, self.color, (
-        self.x + self.BORDER_WIDTH, self.y + self.BORDER_WIDTH, self.width - self.BORDER_WIDTH * 2,
-        self.height - self.BORDER_WIDTH * 2), 0)
+        pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.width, self.height), 0)
+        pygame.draw.rect(win, self.color,
+                         (self.x + self.BORDER_WIDTH, self.y + self.BORDER_WIDTH,
+                          self.width - self.BORDER_WIDTH * 2,self.height - self.BORDER_WIDTH * 2), 0)
 
     def click(self, x, y):
         """
@@ -30,8 +37,8 @@ class Button:
 
 
 class TextButton(Button):
-    def __init__(self, x, y, width, height, color, text, border_color=(0, 0, 0)):
-        super().__init__(x, y, width, height, color, border_color)
+    def __init__(self, x, y, width, height, text):
+        super().__init__(x, y, width, height)
         self.text = text
         self.text_font = pygame.font.SysFont("comicsans", 30)
 
