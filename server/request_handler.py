@@ -1,13 +1,12 @@
 import socket
 import threading
-import time
 from player import Player
 from game import Game
 import json
 
 
-class Server(object):
-    PLAYERS = 1
+class Server:
+    PLAYERS = 2
 
     def __init__(self):
         self.connection_queue = []
@@ -29,7 +28,10 @@ class Server(object):
                     break
 
                 key = int(list(data.keys())[0])
-                send_msg = ""
+                send_msg = {}
+
+                if key == -2:
+                    send_msg = [True if player.game else False, len(self.connection_queue), self.PLAYERS]
                 if key == -1:  # Get list of players
                     if player.game:
                         send_msg = {
@@ -42,11 +44,11 @@ class Server(object):
                         if not player.has_guessed:
                             guess = player.game.player_guess(player, data['0'][0])
                             if guess:
-                                player.update_score(10)
+                                player.update_score(player.game.round.time)
                                 player.has_guessed = True
                             send_msg = guess
-                    elif key == 1:  # Skip
-                        send_msg = player.game.skip()
+                    #elif key == 1:  # Skip
+                    #    send_msg = player.game.skip()
                     elif key == 2:  # Get chat
                         send_msg = player.game.round.chat.get_chat()
                     elif key == 3:  # Get board
@@ -57,8 +59,8 @@ class Server(object):
                         send_msg = player.game.round_counter
                     elif key == 6:  # Get word
                         send_msg = player.game.round.word
-                    elif key == 7:  # Get skips
-                        send_msg = player.game.round.skips
+                    #elif key == 7:  # Get skips
+                    #    send_msg = player.game.round.skips
                     elif key == 8:  # Update board
                         player.game.update_board(*data['8'][:3])
                     elif key == 9:  # Get round time
@@ -67,6 +69,10 @@ class Server(object):
                         send_msg = player.game.players[player.game.player_draw_ind-1] == player
                     elif key == 11:  # Clear the board
                         player.game.board.clear()
+                    elif key == 13:  # Get name of drawer
+                        send_msg = player.game.players[player.game.player_draw_ind - 1].get_name()
+                if key == 12:
+                    send_msg = True if player.game else False
 
                 conn.sendall(json.dumps(send_msg).encode()+".".encode())
 
@@ -75,10 +81,13 @@ class Server(object):
                 break
 
         print(f"[DISCONN] {player.name} ({player.ip[0]})")
-        if player.game:
-            player.game.player_disconnected(player)
-        if player in self.connection_queue:
-            self.connection_queue.remove(player)
+        try:
+            if player in self.connection_queue:
+                self.connection_queue.remove(player)
+            # if player.game:
+                # player.game.player_disconnected(player)
+        except:
+            pass
         conn.close()
 
     def handle_queue(self, player):
@@ -90,7 +99,7 @@ class Server(object):
         self.connection_queue.append(player)
 
         if len(self.connection_queue) >= self.PLAYERS:
-            game = Game(self.game_id, self.connection_queue[:])
+            game = Game(self.connection_queue[:])
             for p in game.players:
                 p.set_game(game)
             self.game_id += 1

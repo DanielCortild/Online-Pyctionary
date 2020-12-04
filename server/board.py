@@ -1,4 +1,4 @@
-class Board(object):
+class Board:
     ROWS = COLS = 80
 
     def __init__(self):
@@ -15,7 +15,12 @@ class Board(object):
         :param color: 0-8
         :return: None
         """
-        self.data[y][x] = color
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                try:
+                    self.data[y+j][x+i] = color
+                except:
+                    pass
 
     def clear(self):
         """
@@ -23,15 +28,6 @@ class Board(object):
         :return: None
         """
         self.data = self._create_empty_board()
-
-    def fill(self, x, y):
-        """
-        Fills in specific shape or area using recursion
-        :param x: int
-        :param y: int
-        :return: None
-        """
-        pass
 
     def get_board(self):
         """

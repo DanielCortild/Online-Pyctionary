@@ -1,17 +1,14 @@
 from board import Board
 from round import Round
-
 import random
 
 
-class Game(object):
-    def __init__(self, id, players):
+class Game:
+    def __init__(self, players):
         """
         init the game once enough players are connected
-        :param id: int
         :param players: Player[]
         """
-        self.id = id
         self.players = players
         self.words_used = set()
         self.round = None
@@ -26,16 +23,19 @@ class Game(object):
         :return: None
         """
         try:
-            if self.player_draw_ind >= len(self.players) or self.player_draw_ind == -1:
-                print(f"[END] Game {self.id} ended because everyone drew once or all players disconnected")
+            if self.round_counter >= 3*len(self.players):
+                self.end_game()
+            elif self.player_draw_ind >= len(self.players) or self.player_draw_ind == -1:
                 self.end_game()
             else:
                 round_word = self.get_word()
                 self.round = Round(round_word, self.players[self.player_draw_ind], self)
                 self.round_counter += 1
                 self.player_draw_ind += 1
+                if self.player_draw_ind >= len(self.players):
+                    self.player_draw_ind -= len(self.players)
         except Exception as e:
-            print(f"[EXCEPTION] Game {self.id} has ended because of {e}")
+            print(f"[EXCEPTION] Game ended because of {e}")
             self.end_game()
 
     def player_guess(self, player, guess):
@@ -47,25 +47,25 @@ class Game(object):
         """
         return self.round.guess(player, guess)
 
-    def player_disconnected(self, player):
-        """
-        clean up objects when player leaves
-        :param player: Player
-        :raises: Exception()
-        """
-        if player in self.players:
-            player_ind = self.players.index(player)
-            if player_ind >= self.player_draw_ind:
-                self.player_draw_ind -= 1
-            self.players.remove(player)
-            self.round.player_left(player)
-        else:
-            raise Exception("Player not in game")
-
-        self.round.chat.update_chat(f"Player {player.name} disconnected!")
-
-        if len(self.players) == 0:
-            self.end_game()
+    # def player_disconnected(self, player):
+    #     """
+    #     clean up objects when player leaves
+    #     :param player: Player
+    #     :raises: Exception()
+    #     """
+    #     if player in self.players:
+    #         player_ind = self.players.index(player)
+    #         if player_ind >= self.player_draw_ind:
+    #             self.player_draw_ind -= 1
+    #         self.players.remove(player)
+    #         self.round.player_left(player)
+    #     else:
+    #         raise Exception("Player not in game")
+    #
+    #     self.round.chat.update_chat(f"Player {player.name} disconnected!")
+    #
+    #     if len(self.players) == 0:
+    #         self.end_game()
 
     def get_player_scores(self):
         """
@@ -85,13 +85,13 @@ class Game(object):
             self.round.chat.update_chat(f"Player has voted to skip ({self.round.skips}/{len(self.players)-2})")
             if new_round:
                 self.round.chat.update_chat("Round has been skipped.")
-                self.round_ended()
+                self.end_round()
                 return True
             return False
         else:
             raise Exception("No round started yet")
 
-    def round_ended(self):
+    def end_round(self):
         """
         If rounds ends call this
         :return: None
@@ -108,20 +108,13 @@ class Game(object):
         :param color: 0-8
         :return: None
         """
-        if not self.board:
-            raise Exception("No board created")
-        self.board.update(x,y,color)
+        self.board.update(x, y, color)
 
     def end_game(self):
         """
-
         :return:
         """
-        print(f"[GAME] Game {self.id} ended")
-        # for player in self.players:
-        #     self.round.player_left(player)
-        for player in self.players:
-            player.game = None
+        print(f"[GAME] Game ended")
 
     def get_word(self):
         """

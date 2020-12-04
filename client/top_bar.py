@@ -23,7 +23,7 @@ class TopBar:
         self.time = 0
 
     def draw(self, win):
-        text = self.font.render(f"Round {self.round} of {len(self.game.players)}", True, (0, 0, 0))
+        text = self.font.render(f"Round {self.round} of {3*len(self.game.leaderboard.players)}", True, (0, 0, 0))
         win.blit(text, (self.x+self.height/2-text.get_height()/2, self.y+self.height/2-text.get_height()/2))
 
         text = self.font.render(self.underscore_text(self.word, self.game.is_drawing), True, (0, 0, 0))

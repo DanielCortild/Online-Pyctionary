@@ -1,5 +1,6 @@
 import socket
 import json
+import time
 
 
 class Network:
@@ -35,4 +36,4 @@ class Network:
 
 if __name__ == "__main__":
     n = Network("Daniel Test")
-    print(n.send({10: []}))
+    print(n.send({12: []}))

@@ -1,4 +1,4 @@
-class Player(object):
+class Player:
     def __init__(self, ip, name):
         """
         Init player object
@@ -34,20 +34,6 @@ class Player(object):
         :return: bool
         """
         return self.game.player_guess(self, wrd)
-
-    def disconnect(self):
-        """
-        Call to disconnect player
-        :return:
-        """
-        self.game.player_disconnected(self, wrd)
-
-    def get_ip(self):
-        """
-        Gets player ip
-        :return: str
-        """
-        return self.ip
 
     def get_name(self):
         """

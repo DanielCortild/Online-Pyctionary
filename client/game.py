@@ -4,6 +4,7 @@ from top_bar import TopBar
 from leaderboard import Leaderboard
 from bottom_bar import BottomBar
 from chat import Chat
+from person_is_drawing import PersonIsDrawing
 from config import *
 
 
@@ -19,12 +20,15 @@ class Game:
         self.is_drawing = False
         self.players = []
         self.draw_color = COLORS[1]
+        self.game_ended = False
+        self.drawer = "No one"
 
         self.top_bar = TopBar(20, 20, 1040, 80, self)
         self.leaderboard = Leaderboard(20, 120, 270, 60)
         self.board = Board(310, 120, 6)
         self.chat = Chat(810, 120, 250, 580)
         self.bottom_bar = BottomBar(20, 620, 770, 80, self)
+        self.person_is_drawing = PersonIsDrawing(310, 620, 480, 80)
 
     def add_player(self, player):
         self.players.append(player)
@@ -42,6 +46,8 @@ class Game:
         self.chat.draw(self.win)
         if self.is_drawing:
             self.bottom_bar.draw(self.win)
+        else:
+            self.person_is_drawing.draw(self.win, self.drawer)
 
         pygame.display.update()
 
@@ -67,36 +73,37 @@ class Game:
         self.top_bar.word = self.connection.send({6: []})
         self.top_bar.time = self.connection.send({9: []})
         self.is_drawing = self.connection.send({10: []})
+        self.drawer = self.connection.send({13: []})
 
     def run(self):
         run = True
         clock = pygame.time.Clock()
         while run:
-            clock.tick(60)
             try:
-                self.get_data()
-                self.board.translate_board()
-                if not len(self.leaderboard.players):
-                    raise Exception("No more players")
-            except Exception as e:
-                print(e)
-                run = False
-                break
-
-            self.draw()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                clock.tick(60)
+                try:
+                    self.get_data()
+                    self.board.translate_board()
+                except:
                     run = False
-                    break
-                if pygame.mouse.get_pressed()[0]:
-                    self.handle_click()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN and len(self.chat.typing):
-                        self.connection.send({0: [self.chat.typing]})
-                        self.chat.update_chat()
-                    else:
-                        key_name = pygame.key.name(event.key).upper()
-                        self.chat.type(key_name, self.is_drawing)
+                self.draw()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
+                        break
+                    if pygame.mouse.get_pressed()[0]:
+                        self.handle_click()
+
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN and len(self.chat.typing):
+                            self.connection.send({0: [self.chat.typing]})
+                            self.chat.update_chat()
+                        else:
+                            key_name = pygame.key.name(event.key).upper()
+                            self.chat.type(key_name, self.is_drawing)
+            except Exception as e:
+                print(f"Closed because {e}")
+                run = False
 
         pygame.quit()

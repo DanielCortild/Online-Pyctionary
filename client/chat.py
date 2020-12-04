@@ -37,7 +37,12 @@ class Chat:
             self.content = self.content[:-1]
 
         for i, chat in enumerate(self.content):
-            color = (0, 255, 0) if chat[0] == "g" else (255, 0, 0)
+            if chat[0] == "g": color = (0, 255, 0)
+            elif chat[0] == "r": color = (255, 0, 0)
+            elif chat[0] == "o": color = (255, 128, 0)
+            elif chat[0] == "b": color = (0, 0, 255)
+            else: color = (0, 0, 0)
+
             txt = self.font.render(chat[1:], True, color)
             win.blit(txt, (self.x+10, self.y+(i+1)*CHAT_GAP))
 
