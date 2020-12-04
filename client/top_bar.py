@@ -41,6 +41,5 @@ class TopBar:
                 new_str += "_"
             else:
                 new_str += "  "
-            print(new_str)
             new_str += " "
         return new_str

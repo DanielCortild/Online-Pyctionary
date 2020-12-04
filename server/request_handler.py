@@ -7,15 +7,14 @@ import json
 
 
 class Server(object):
-    PLAYERS = 1
+    PLAYERS = 2
 
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
-        # server = "188.166.107.89"
-        self.addr = ("localhost", 1286)
+        self.addr = ("localhost", 1287) # 188.166.107.89
 
-    def player_thread(self, conn, player):
+    def player_communication(self, conn, player):
         """
         Handles communication between clients
         :param conn: connection object
@@ -31,7 +30,7 @@ class Server(object):
 
                 key = int(list(data.keys())[0])
                 send_msg = ""
-                if key == -1: # Get game, returns list of players
+                if key == -1: # Get list of players
                     if player.game:
                         send_msg = {
                             player.get_name(): player.get_score() for player in player.game.players
@@ -56,17 +55,17 @@ class Server(object):
                     elif key == 7:  # Get skips
                         send_msg = player.game.round.skips
                     elif key == 8:  # Update board
-                        player.game.update_board(data['8'][:3])
+                        player.game.update_board(*data['8'][:3])
                     elif key == 9:  # Get round time
                         send_msg = player.game.round.time
 
                 conn.sendall(json.dumps(send_msg).encode()+".".encode())
 
             except Exception as e:
-                print(f"[EXCEPTION] {player.get_name()}: {e}")
+                print(f"[!ERROR!] {player.get_name()}: {e}")
                 break
 
-        print(f"[DISCONNECTION] {player.name}")
+        print(f"[DISCONN] {player.name} ({player.ip[0]})")
         if player.game:
             player.game.player_disconnected(player)
         if player in self.connection_queue:
@@ -90,41 +89,46 @@ class Server(object):
 
     def authentication(self, conn, addr):
         """
-        Authentication here
-        :param conn: connection object
-        :param addr: str
+        Authenticates the user and launches a player thread
+        :param conn: Connection Object
+        :param addr: (str, int)
         :return: None
         """
         try:
             name = conn.recv(1024).decode()
             if not name:
-                raise Exception("No name received")
-            conn.sendall("[CONNECTED]".encode())
+                raise Exception(f"No name received ({addr[0]})")
+            conn.sendall("[CONNECT]".encode())
 
             player = Player(addr, name)
             self.handle_queue(player)
-            threading.Thread(target=self.player_thread, args=(conn, player)).start()
+            print(f"[CONNECT] {name} ({addr[0]})")
+
+            threading.Thread(target=self.player_communication, args=(conn, player)).start()
         except Exception as e:
-            print(f"[EXCEPTION] {e}")
+            print(f"[!ERROR!] {e}")
             conn.close()
 
-    def connected_thread(self):
+    def start(self):
+        """
+        Starts the Network
+        :return: None
+        """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             sock.bind(self.addr)
         except socket.error as e:
-            print(f"[SOCKET ERROR] {e}")
+            print(f"[SOCKET!] {e}")
 
         sock.listen(1)
-        print("[START] Waiting for a connection")
+        print("[STARTED] Waiting for a connection")
 
         while True:
             conn, addr = sock.accept()
-            print(f"[CONNECT] {addr[0]}:{addr[1]}")
             self.authentication(conn, addr)
 
 
 if __name__ == "__main__":
-    s = Server()
+    # s = Server()
     # threading.Thread(target=s.connected_thread).start()
-    s.connected_thread()
+    Server().start()
