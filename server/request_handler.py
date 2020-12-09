@@ -7,9 +7,9 @@ import json
 try:
     import logging
     from systemd.journal import JournalHandler
-    logger = logging.getLogger('demo')
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(format='%(message)s', level=logging.INFO)
     logger.addHandler(JournalHandler())
-    logger.setLevel(logging.INFO)
 
     def log(msg):
         logger.info(msg)
@@ -24,7 +24,7 @@ class Server:
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
-        self.addr = ("", 1287)  # 188.166.107.89
+        self.addr = ("", 1287)
 
     def player_communication(self, conn, player):
         """
@@ -41,7 +41,7 @@ class Server:
                     break
 
                 key = int(list(data.keys())[0])
-                send_msg = {}
+                send_msg = ""
 
                 if key == -2:
                     send_msg = [True if player.game else False, len(self.connection_queue), self.PLAYERS]

@@ -1,12 +1,12 @@
 import socket
 import json
-import time as t
 
 
 class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.addr = ("localhost", 1287) # 188.166.107.89
+        self.addr = ("proxy50.rt3.io", 34541)
+        # self.addr = ("localhost", 1288)
         self.name = name
         self.connect()
 

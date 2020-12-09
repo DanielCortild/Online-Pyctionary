@@ -6,8 +6,7 @@ import time
 class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # self.server = "188.166.107.89"
-        self.addr = ("proxy50.rt3.io", 34497)
+        self.addr = ("proxy55.rt3.io", 34730)
         self.name = name
         self.connect()
 
