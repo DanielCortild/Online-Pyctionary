@@ -7,7 +7,7 @@ class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # self.server = "188.166.107.89"
-        self.addr = ("localhost", 1287)
+        self.addr = ("proxy50.rt3.io", 34497)
         self.name = name
         self.connect()
 
@@ -36,4 +36,4 @@ class Network:
 
 if __name__ == "__main__":
     n = Network("Daniel Test")
-    print(n.send({12: []}))
+    print(n.send({-1: []}))

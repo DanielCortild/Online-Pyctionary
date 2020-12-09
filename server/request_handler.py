@@ -4,6 +4,19 @@ from player import Player
 from game import Game
 import json
 
+try:
+    import logging
+    from systemd.journal import JournalHandler
+    logger = logging.getLogger('demo')
+    logger.addHandler(JournalHandler())
+    logger.setLevel(logging.INFO)
+
+    def log(msg):
+        logger.info(msg)
+except:
+    def log(msg):
+        print(msg)
+
 
 class Server:
     PLAYERS = 2
@@ -77,10 +90,10 @@ class Server:
                 conn.sendall(json.dumps(send_msg).encode()+".".encode())
 
             except Exception as e:
-                print(f"[!ERROR!] {player.get_name()}: {e}")
+                log(f"[!ERROR!] {player.get_name()}: {e}")
                 break
 
-        print(f"[DISCONN] {player.name} ({player.ip[0]})")
+        log(f"[DISCONN] {player.name} ({player.ip[0]})")
         try:
             if player in self.connection_queue:
                 self.connection_queue.remove(player)
@@ -120,11 +133,11 @@ class Server:
 
             player = Player(addr, name)
             self.handle_queue(player)
-            print(f"[CONNECT] {name} ({addr[0]})")
+            log(f"[CONNECT] {name} ({addr[0]})")
 
             threading.Thread(target=self.player_communication, args=(conn, player)).start()
         except Exception as e:
-            print(f"[!ERROR!] {e}")
+            log(f"[!ERROR!] {e}")
             conn.close()
 
     def start(self):
@@ -136,10 +149,10 @@ class Server:
         try:
             sock.bind(self.addr)
         except socket.error as e:
-            print(f"[SOCKET!] {e}")
+            log(f"[SOCKET!] {e}")
 
         sock.listen(1)
-        print("[STARTED] Waiting for a connection")
+        log("[STARTED] Waiting for a connection")
 
         while True:
             conn, addr = sock.accept()
