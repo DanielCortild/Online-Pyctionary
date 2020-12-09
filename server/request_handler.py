@@ -24,7 +24,7 @@ class Server:
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
-        self.addr = ("", 1287)
+        self.addr = ("", 1286)
 
     def player_communication(self, conn, player):
         """

@@ -25,7 +25,7 @@ class Game:
         try:
             if self.round_counter >= 3*len(self.players):
                 self.end_game()
-            elif self.player_draw_ind >= len(self.players) or self.player_draw_ind == -1:
+            elif self.player_draw_ind == -1:
                 self.end_game()
             else:
                 round_word = self.get_word()
