@@ -41,7 +41,7 @@ class Server:
                     break
 
                 key = int(list(data.keys())[0])
-                send_msg = ""
+                send_msg = []
 
                 if key == -2:
                     send_msg = [True if player.game else False, len(self.connection_queue), self.PLAYERS]

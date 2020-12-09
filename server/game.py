@@ -11,10 +11,10 @@ class Game:
         """
         self.players = players
         self.words_used = set()
-        self.round = None
         self.board = Board()
         self.player_draw_ind = 0
         self.round_counter = 0
+        self.round = None
         self.start_new_round()
 
     def start_new_round(self):
@@ -28,8 +28,7 @@ class Game:
             elif self.player_draw_ind == -1:
                 self.end_game()
             else:
-                round_word = self.get_word()
-                self.round = Round(round_word, self.players[self.player_draw_ind], self)
+                self.round = Round(self.get_word(), self.players[self.player_draw_ind], self)
                 self.round_counter += 1
                 self.player_draw_ind += 1
                 if self.player_draw_ind >= len(self.players):
