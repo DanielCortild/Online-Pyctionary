@@ -5,9 +5,7 @@ import json
 class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.addr = ("proxy50.rt3.io", 34541)
-        # self.addr = ("172.16.1.136", 1287)
-        # self.addr = ("localhost", 1286)
+        self.addr = ("188.166.107.89", 1286)
         self.name = name
         self.connect()
 

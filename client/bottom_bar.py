@@ -18,21 +18,23 @@ class BottomBar:
         self.height = height
         self.game = game
 
-        self.clear_button = TextButton(self.x + self.width - 125,
-                                       self.y+self.height/2-25, 100, 50, "Clear")
-        self.eraser_button = TextButton(self.x + self.width - 250,
-                                        self.y+self.height/2-25, 100, 50, "Erase")
-        self.color_buttons = [
-            Button(self.x+25+50*i, self.y+self.height/2-25, 50, 50, COLORS[i]) for i in range(len(COLORS))
-        ]
+        self.clear_button = TextButton(self.x + self.width - 125, self.y+self.height/2-25, 100, 50, "Clear")
+        self.eraser_button = TextButton(self.x + self.width - 250, self.y+self.height/2-25, 100, 50, "Erase")
+        self.color_buttons = [Button(self.x+25+50*i, self.y+self.height/2-25, 50, 50, c) for i, c in enumerate(COLORS)]
 
     def draw(self, win):
-        pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.width, self.height), BORDER_THICKNESS)
+        """
+        Draws the bottom bar
+        :param win: Window object
+        :return: None
+        """
         self.clear_button.draw(win)
         self.eraser_button.draw(win)
 
         for color_button in self.color_buttons:
             color_button.draw(win)
+
+        pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.width, self.height), BORDER_THICKNESS)
 
     def handle_click(self, mouse):
         """

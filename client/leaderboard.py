@@ -30,8 +30,8 @@ class Leaderboard:
             pygame.draw.rect(win, color, (self.x, self.y+i*self.entry_height, self.width, self.entry_height))
 
             rank = self.rank_font.render(f"#{i+1}", True, (0, 0, 0))
-            win.blit( rank, ( self.x + self.entry_height / 2 - rank.get_height() / 2,
-                              self.y + i * self.entry_height + self.entry_height / 2 - rank.get_height() / 2 ) )
+            win.blit(rank, (self.x + self.entry_height / 2 - rank.get_height() / 2,
+                            self.y + i * self.entry_height + self.entry_height / 2 - rank.get_height() / 2))
 
             name = self.name_font.render(score[0], True, (0, 0, 0))
             win.blit(name, (self.x + 70,
@@ -43,6 +43,3 @@ class Leaderboard:
 
         pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, self.width,
                                           self.entry_height*len(self.players)), BORDER_THICKNESS)
-
-    def set_players(self, players):
-        self.players = players

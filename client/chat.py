@@ -3,17 +3,19 @@ from config import *
 
 
 class Chat:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, chat_gap):
         """
         :param x: int
         :param y: int
         :param width: int
         :param height: int
+        :param chat_gap: int
         """
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.chat_gap = chat_gap
 
         self.content = []
         self.typing = ""
@@ -33,18 +35,23 @@ class Chat:
         :param win: Window
         :return: None
         """
-        while len(self.content) * CHAT_GAP > self.height - 100:
+        while len(self.content) * self.chat_gap > self.height - 100:
             self.content = self.content[:-1]
 
         for i, chat in enumerate(self.content):
-            if chat[0] == "g": color = (0, 255, 0)
-            elif chat[0] == "r": color = (255, 0, 0)
-            elif chat[0] == "o": color = (255, 128, 0)
-            elif chat[0] == "b": color = (0, 0, 255)
-            else: color = (0, 0, 0)
+            if chat[0] == "g":
+                color = (0, 255, 0)
+            elif chat[0] == "r":
+                color = (255, 0, 0)
+            elif chat[0] == "o":
+                color = (255, 128, 0)
+            elif chat[0] == "b":
+                color = (0, 0, 255)
+            else:
+                color = (0, 0, 0)
 
             txt = self.font.render(chat[1:], True, color)
-            win.blit(txt, (self.x+10, self.y+(i+1)*CHAT_GAP))
+            win.blit(txt, (self.x + 10, self.y + (i + 1) * self.chat_gap))
 
         pygame.draw.rect(win, (220, 220, 220), (self.x, self.y + self.height - 40, self.width, 40))
 

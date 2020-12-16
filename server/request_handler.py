@@ -13,13 +13,15 @@ try:
 
     def log(msg):
         logger.info(msg)
-except:
+except Exception as e:
+    print(f"[LOGGING] Could not implement logging {e}")
+
     def log(msg):
         print(msg)
 
 
 class Server:
-    PLAYERS = 2
+    PLAYERS = 4
 
     def __init__(self):
         self.connection_queue = []
@@ -60,8 +62,6 @@ class Server:
                                 player.update_score(player.game.round.time)
                                 player.has_guessed = True
                             send_msg = guess
-                    #elif key == 1:  # Skip
-                    #    send_msg = player.game.skip()
                     elif key == 2:  # Get chat
                         send_msg = player.game.round.chat.get_chat()
                     elif key == 3:  # Get board
@@ -72,8 +72,6 @@ class Server:
                         send_msg = player.game.round_counter
                     elif key == 6:  # Get word
                         send_msg = player.game.round.word
-                    #elif key == 7:  # Get skips
-                    #    send_msg = player.game.round.skips
                     elif key == 8:  # Update board
                         player.game.update_board(*data['8'][:3])
                     elif key == 9:  # Get round time
@@ -84,23 +82,16 @@ class Server:
                         player.game.board.clear()
                     elif key == 13:  # Get name of drawer
                         send_msg = player.game.players[player.game.player_draw_ind - 1].get_name()
-                if key == 12:
-                    send_msg = True if player.game else False
 
                 conn.sendall(json.dumps(send_msg).encode()+".".encode())
 
             except Exception as e:
-                log(f"[!ERROR!] {player.get_name()}: {e}")
+                log(f"[ERROR] {player.get_name()}: {e}")
                 break
 
-        log(f"[DISCONN] {player.name} ({player.ip[0]})")
-        try:
-            if player in self.connection_queue:
-                self.connection_queue.remove(player)
-            # if player.game:
-                # player.game.player_disconnected(player)
-        except:
-            pass
+        log(f"[DISCONNECT] {player.name} ({player.ip[0]})")
+        if player in self.connection_queue:
+            self.connection_queue.remove(player)
         conn.close()
 
     def handle_queue(self, player):
@@ -137,7 +128,7 @@ class Server:
 
             threading.Thread(target=self.player_communication, args=(conn, player)).start()
         except Exception as e:
-            log(f"[!ERROR!] {e}")
+            log(f"[ERROR] {e}")
             conn.close()
 
     def start(self):
@@ -160,6 +151,4 @@ class Server:
 
 
 if __name__ == "__main__":
-    # s = Server()
-    # threading.Thread(target=s.connected_thread).start()
     Server().start()

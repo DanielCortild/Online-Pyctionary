@@ -26,12 +26,9 @@ class Game:
         self.top_bar = TopBar(20, 20, 1040, 80, self)
         self.leaderboard = Leaderboard(20, 120, 270, 60)
         self.board = Board(310, 120, 6)
-        self.chat = Chat(810, 120, 250, 580)
+        self.chat = Chat(810, 120, 250, 580, 30)
         self.bottom_bar = BottomBar(20, 620, 770, 80, self)
         self.person_is_drawing = PersonIsDrawing(310, 620, 480, 80)
-
-    def add_player(self, player):
-        self.players.append(player)
 
     def draw(self):
         """
@@ -66,7 +63,11 @@ class Game:
             self.bottom_bar.handle_click(mouse)
 
     def get_data(self):
-        self.leaderboard.set_players(self.connection.send({-1: []}))
+        """
+        Gets and sets data from server
+        :return: None
+        """
+        self.leaderboard.players = self.connection.send({-1: []})
         self.chat.content = self.connection.send({2: []})
         self.board.compressed_board = self.connection.send({3: []})
         self.top_bar.change_round(self.connection.send({5: []}))
@@ -76,25 +77,24 @@ class Game:
         self.drawer = self.connection.send({13: []})
 
     def run(self):
+        """
+        Runs the game by getting data from the server
+        :return: None
+        """
         run = True
         clock = pygame.time.Clock()
-        while run:
+        while True:
             try:
-                clock.tick(60)
-                try:
-                    self.get_data()
-                    self.board.translate_board()
-                except:
-                    run = False
-
+                clock.tick(120)
+                self.get_data()
+                self.board.translate_board()
                 self.draw()
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        run = False
-                        break
+                        raise Exception("Player Quit")
                     if pygame.mouse.get_pressed()[0]:
                         self.handle_click()
-
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_RETURN and len(self.chat.typing):
                             self.connection.send({0: [self.chat.typing]})
@@ -104,6 +104,5 @@ class Game:
                             self.chat.type(key_name, self.is_drawing)
             except Exception as e:
                 print(f"Closed because {e}")
-                run = False
-
+                break
         pygame.quit()

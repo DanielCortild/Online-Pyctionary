@@ -15,7 +15,7 @@ class Round(object):
         self.player_drawing = player_drawing
         self.player_guessed = []
         self.skips = 0
-        self.time = 20
+        self.time = 60
         self.game = game
         self.player_scores = {player: 0 for player in self.game.players}
         self.chat = Chat()
