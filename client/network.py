@@ -5,7 +5,7 @@ import json
 class Network:
     def __init__(self, name):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.addr = ("188.166.107.89", 1286)
+        self.addr = ("46.244.5.193", 1286)
         self.name = name
         self.connect()
 

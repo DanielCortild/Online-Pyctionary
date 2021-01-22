@@ -5,14 +5,10 @@ from game import Game
 import json
 
 try:
-    import logging
-    from systemd.journal import JournalHandler
-    logger = logging.getLogger(__name__)
-    logging.basicConfig(format='%(message)s', level=logging.INFO)
-    logger.addHandler(JournalHandler())
-
+    from systemd import journal
+    
     def log(msg):
-        logger.info(msg)
+        journal.send(msg)
 except Exception as e:
     print(f"[LOGGING] Could not implement logging {e}")
 
