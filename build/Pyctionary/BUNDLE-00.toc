@@ -1,3 +1,0 @@
-([('Pyctionary',
-   '/Users/danielcortild/Code/Projects/Python/OnlinePictionary/dist/Pyctionary',
-   'EXECUTABLE')],)
