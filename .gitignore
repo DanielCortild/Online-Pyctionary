@@ -2,3 +2,4 @@
 /server/__pycache__
 /build
 .DS_Store
+.idea
